@@ -24,6 +24,26 @@
 			- Accept-Encoding
 			- Accept-Language
 			- Accept-Charset
+		- We can specify more than 1 possible content types in the Accept Headers that we are willing to accept response in.
+		- Equal Preference
+			- If we pass Accept: application/json, application/xml - We are giving EQUAL Preference to both types of content
+			- If we pass Accept: application/json, application/xml;q=0.9 -  Code is giving higher preference to Json
+
+		- In the HTTP "Accept" header, the "q" parameter is used to indicate the quality (or preference) of a media type. The "q" parameter has a value between 0 and 1, where 1 is the highest quality, and 0 is the lowest. If the "q" parameter is not specified, it is assumed to be 1.
+		- For example:
+			- Accept: application/json;q=0.8, text/html;q=0.6, */*;q=0.1
+
+		- In this example:
+			- application/json has a quality of 0.8.
+			- text/html has a quality of 0.6.
+			- */* (any media type) has a quality of 0.1.
+
+		- Here are some common values and their meanings:
+
+			- 1.0: The client explicitly prefers this media type.
+			- 0.9: High preference but not explicit.
+			- 0.8 to 0.5: Moderate preference.
+			- 0.4 to 0.1: Low preference.
 
 	- Response headers
 		- Contain information on generated response or about server
