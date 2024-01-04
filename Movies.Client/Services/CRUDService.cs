@@ -25,11 +25,12 @@ namespace Movies.Client.Services
             //Ideally no headers are set but its' generally good practice to clear the request headers(If they're set by any other system)
             _httpClient.DefaultRequestHeaders.Clear();
 
-            //Adding XML. Telling that both options are valid(XML and JSON)
+            //Adding XML. Telling that both options are valid(XML and JSON). Setting overload to 0.9 for Xml
             _httpClient.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/xml"));
+                new MediaTypeWithQualityHeaderValue("application/xml", 0.9));
 
             //Setting accept headers. First as Json. It's a collection, we could specify more than 1 accept headers
+            //Would default to Quality as 1 for application/json - Meaning highest priority
             _httpClient.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
    

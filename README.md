@@ -50,3 +50,7 @@
 		- Provided by server
 		- Common headers
 			- Content-Type: application/json
+
+
+
+	- Nowadays, XML & Json are not enough. There are chances that within code, if we are calling an external vendor, different endpoints would return data in different format. Setting Accept header does not make sense
