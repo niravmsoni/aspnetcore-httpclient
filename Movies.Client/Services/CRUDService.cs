@@ -109,5 +109,10 @@ namespace Movies.Client.Services
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             });
         }
+
+        private async Task CreateResource()
+        {
+
+        }
     }
 }
