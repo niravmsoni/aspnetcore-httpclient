@@ -78,6 +78,7 @@
 		- WE also need to make sure to pass application/json-patch+json as the content type
 
 		- Newtonsoft.Json(Json.NET) vs System.Text.Json
-			- System.Text.Json - Focused on speed by using Span<T>
+			- System.Text.Json - Focused on speed by using Span<T> but misses some advanced functionality
 			- Json.NET - Focused on set of advanced features. Both are great choices
 			
+		- Patch is very powerful but generally, APIs only support changes in PATCH that go 1 level deep
