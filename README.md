@@ -67,3 +67,13 @@
 	- 2 ways to perform CRUD operation (Refer CRUDService)
 		- Using HttpRequestMessage
 		- Using Shortcut methods
+
+	- 4.Partial Updates
+		- PUT is intended for full updates
+		- Ideally, PUT is less used since for updating, we need to first get the full resource and then pass it along in the request
+		- Today, best practice is to use PATCH instead of PUT when updating
+		- Refer standard here - https://datatracker.ietf.org/doc/html/rfc6902
+		- Need Nuget package to be installed to support patch operation - Microsoft.AspNetCore.JsonPatch
+		- This uses Newtonsoft.Json under the hood - So, we need to ensure that we use that library for serializing our object
+		- WE also need to make sure to pass application/json-patch+json as the content type
+			
