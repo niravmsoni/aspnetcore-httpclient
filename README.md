@@ -55,3 +55,10 @@
 	- This is where HttpRequestMessage comes in
 
 	- Using HttpRequestMessage is a more fine-grained low level module using which we can individually prepare the requests to work with different types of Verbs
+
+	- HttpRequestMessage.Content - Type - HttpContent
+	- Use a derived class that matches content of message
+		- StringContent
+		- ObjectContent
+		- ByteArrayContent
+		- StreamContent..

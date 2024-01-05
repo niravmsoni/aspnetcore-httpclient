@@ -38,7 +38,8 @@ namespace Movies.Client.Services
         public async Task Run()
         {
             //await GetResource();
-            await GetResourceThroughHttpRequestMessage();
+            //await GetResourceThroughHttpRequestMessage();
+            await CreateResource();
         }
 
         /// <summary>
@@ -110,9 +111,40 @@ namespace Movies.Client.Services
             });
         }
 
+        /// <summary>
+        /// Post call via HttpRequestMessage
+        /// </summary>
+        /// <returns></returns>
         private async Task CreateResource()
         {
+            var movieToCreate = new MovieForCreation("Description", Guid.Parse("d28888e9-2ba9-473a-a40f-e38cb54f9b35"), "Crime, Drama", new DateTimeOffset(new DateTime(2024, 01, 01)), "Jawan");
 
+            //This will serialize with default settings
+            var serializedMovieToCreate = JsonSerializer.Serialize(movieToCreate);
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "api/movies");
+
+            //Informing server, we're willing to accept response in application/json
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            //Setting content - Approach#1
+            request.Content = new StringContent(serializedMovieToCreate);
+
+            //Setting content - Approach#2 - In this case, no need to explicitly set content type header
+            //request.Content = new StringContent(serializedMovieToCreate, Encoding.UTF8, "application/json");
+
+            //Setting content type so that server knows how to interpret the request
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            var createdMovie = JsonSerializer.Deserialize<Movie>(content, new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
         }
     }
 }
