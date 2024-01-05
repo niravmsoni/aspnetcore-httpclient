@@ -24,8 +24,8 @@ namespace Movies.Client.Services
 
         public async Task Run()
         {
-            //await PatchResource();
-            await PatchResourceShortcut();
+            await PatchResource();
+            //await PatchResourceShortcut();
         }
 
         /// <summary>

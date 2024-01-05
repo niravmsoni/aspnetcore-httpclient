@@ -76,4 +76,8 @@
 		- Need Nuget package to be installed to support patch operation - Microsoft.AspNetCore.JsonPatch
 		- This uses Newtonsoft.Json under the hood - So, we need to ensure that we use that library for serializing our object
 		- WE also need to make sure to pass application/json-patch+json as the content type
+
+		- Newtonsoft.Json(Json.NET) vs System.Text.Json
+			- System.Text.Json - Focused on speed by using Span<T>
+			- Json.NET - Focused on set of advanced features. Both are great choices
 			
