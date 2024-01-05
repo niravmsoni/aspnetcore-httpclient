@@ -26,20 +26,25 @@ namespace Movies.Client.Services
             _httpClient.DefaultRequestHeaders.Clear();
 
             //Adding XML. Telling that both options are valid(XML and JSON). Setting overload to 0.9 for Xml
-            _httpClient.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/xml", 0.9));
+            //_httpClient.DefaultRequestHeaders.Accept.Add(
+            //    new MediaTypeWithQualityHeaderValue("application/xml", 0.9));
 
             //Setting accept headers. First as Json. It's a collection, we could specify more than 1 accept headers
             //Would default to Quality as 1 for application/json - Meaning highest priority
-            _httpClient.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json"));
+            //_httpClient.DefaultRequestHeaders.Accept.Add(
+            //    new MediaTypeWithQualityHeaderValue("application/json"));
    
         }
         public async Task Run()
         {
-            await GetResource();
+            //await GetResource();
+            await GetResourceThroughHttpRequestMessage();
         }
 
+        /// <summary>
+        /// Plain get call using HttpClient
+        /// </summary>
+        /// <returns></returns>
         private async Task GetResource()
         {
             //Bad Practise - HttpClient implements IDisposable
@@ -79,6 +84,30 @@ namespace Movies.Client.Services
             }
 
             //Do something with movie list
+        }
+
+        /// <summary>
+        /// Get call via HttpRequestMessage
+        /// </summary>
+        /// <returns></returns>
+        private async Task GetResourceThroughHttpRequestMessage()
+        {
+            //Any default set on HttpClient will be ignored here
+            var request = new HttpRequestMessage(HttpMethod.Get, "api/movies");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            //Using SendAsync - We can pass in any type of request here but with HttpRequestMessage
+            var response = await _httpClient.SendAsync(request);
+            
+            //No changes here
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            var movies = JsonSerializer.Deserialize<List<Movie>>(content, new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
         }
     }
 }
