@@ -39,7 +39,9 @@ namespace Movies.Client.Services
         {
             //await GetResource();
             //await GetResourceThroughHttpRequestMessage();
-            await CreateResource();
+            //await CreateResource();
+            //await UpdateResource();
+            await DeleteResource();
         }
 
         /// <summary>
@@ -87,6 +89,7 @@ namespace Movies.Client.Services
             //Do something with movie list
         }
 
+        #region Using HttpRequestMessage
         /// <summary>
         /// Get call via HttpRequestMessage
         /// </summary>
@@ -146,5 +149,115 @@ namespace Movies.Client.Services
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             });
         }
+
+        /// <summary>
+        /// PUT = Full update only
+        /// </summary>
+        /// <returns></returns>
+        private async Task UpdateResource()
+        {
+            var movieToUpdate = new MovieForUpdate("Description1", Guid.Parse("d28888e9-2ba9-473a-a40f-e38cb54f9b35"), "Crime, Drama", new DateTimeOffset(new DateTime(2024, 01, 01)), "JawanUpdated");
+
+            //This will serialize with default settings
+            var serializedMovieToUpdate = JsonSerializer.Serialize(movieToUpdate);
+
+            var request = new HttpRequestMessage(HttpMethod.Put, "api/movies/5b1c2b4d-48c7-402a-80c3-cc796ad49c6b");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            //Setting content - Approach#1
+            request.Content = new StringContent(serializedMovieToUpdate);
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            var updatedMovie = JsonSerializer.Deserialize<Movie>(content, new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+        }
+
+        /// <summary>
+        /// Successful delete request returns 204 - NoContent.
+        /// </summary>
+        /// <returns></returns>
+        private async Task DeleteResource()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Delete, "api/movies/5b1c2b4d-48c7-402a-80c3-cc796ad49c6b");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+        }
+        #endregion
+
+        #region Using ShortCut methods
+        /// <summary>
+        /// Using PostAsync shortcut method
+        /// </summary>
+        /// <returns></returns>
+        private async Task PostResourceShortcut()
+        {
+            var movieToCreate = new MovieForCreation("Description", Guid.Parse("d28888e9-2ba9-473a-a40f-e38cb54f9b35"), "Crime, Drama", new DateTimeOffset(new DateTime(2024, 01, 01)), "Jawan");
+
+            var response = await _httpClient.PostAsync(
+                "api/movies",
+                new StringContent(
+                    JsonSerializer.Serialize(movieToCreate),
+                    Encoding.UTF8,
+                    "application/json"));
+
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            var createdMovie = JsonSerializer.Deserialize<Movie>(content,
+               new JsonSerializerOptions
+               {
+                   PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+               });
+        }
+
+        /// <summary>
+        /// Using PutAsync shortcut method
+        /// </summary>
+        /// <returns></returns>
+        private async Task PutResourceShortcut()
+        {
+            var movieToUpdate = new MovieForUpdate("Description1", Guid.Parse("d28888e9-2ba9-473a-a40f-e38cb54f9b35"), "Crime, Drama", new DateTimeOffset(new DateTime(2024, 01, 01)), "JawanUpdated");
+
+            var response = await _httpClient.PutAsync(
+               "api/movies/5b1c2b4d-48c7-402a-80c3-cc796ad49c6b",
+               new StringContent(
+                   JsonSerializer.Serialize(movieToUpdate),
+                   System.Text.Encoding.UTF8,
+                   "application/json"));
+
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            var updatedMovie = JsonSerializer.Deserialize<Movie>(content,
+               new JsonSerializerOptions
+               {
+                   PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+               });
+        }
+
+        /// <summary>
+        /// Using DeleteAsync shortcut method
+        /// </summary>
+        /// <returns></returns>
+        private async Task DeleteResourceShortcut()
+        {
+            var response = await _httpClient.DeleteAsync(
+                "api/movies/5b1c2b4d-48c7-402a-80c3-cc796ad49c6b");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+        }
+        #endregion
     }
 }

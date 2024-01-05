@@ -62,3 +62,8 @@
 		- ObjectContent
 		- ByteArrayContent
 		- StreamContent..
+
+
+	- 2 ways to perform CRUD operation (Refer CRUDService)
+		- Using HttpRequestMessage
+		- Using Shortcut methods
