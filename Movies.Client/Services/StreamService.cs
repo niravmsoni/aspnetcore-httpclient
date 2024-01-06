@@ -1,6 +1,7 @@
 ﻿using Movies.Client.Models;
 using Newtonsoft.Json;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -22,9 +23,14 @@ namespace Movies.Client.Services
         public async Task Run()
         {
             //await GetPosterWithStream();
-            await GetPosterWithStreamAndCompletionMode();
+            //await
+            //GetPosterWithStreamAndCompletionMode();
+            await TestGetPosterWithoutStream();
+            await TestGetPosterWithStream();
+            await TestGetPosterWithStreamAndCompletionMode();
         }
 
+        #region Implementation
         /// <summary>
         /// Read Json response as Stream - Better and more memory efficient
         /// </summary>
@@ -60,6 +66,10 @@ namespace Movies.Client.Services
             }
         }
 
+        /// <summary>
+        /// Read Json response as stream with Completion mode as Header - Better
+        /// </summary>
+        /// <returns></returns>
         private async Task GetPosterWithStreamAndCompletionMode()
         {
             var request = new HttpRequestMessage(
@@ -94,5 +104,101 @@ namespace Movies.Client.Services
             }
         }
 
+        /// <summary>
+        /// Method that will be used to test
+        /// </summary>
+        /// <returns></returns>
+        private async Task GetPosterWithoutStream()
+        {
+            var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"api/movies/d8663e5e-7494-4f81-8739-6e0de1bea7ee/posters/{Guid.NewGuid()}");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            var posters = JsonConvert.DeserializeObject<Poster>(content);
+        }
+
+        #endregion
+
+        #region Test Methods
+        /// <summary>
+        /// Test Method
+        /// </summary>
+        /// <returns></returns>
+        public async Task TestGetPosterWithoutStream()
+        {
+            // warmup - So that first run does not get calculated in performance
+            await GetPosterWithoutStream();
+
+            // start stopwatch 
+            var stopWatch = Stopwatch.StartNew();
+
+            // run requests
+            for (int i = 0; i < 200; i++)
+            {
+                await GetPosterWithoutStream();
+            }
+
+            // stop stopwatch
+            stopWatch.Stop();
+            Console.WriteLine($"Elapsed milliseconds without stream: " +
+                $"{stopWatch.ElapsedMilliseconds}, " +
+                $"averaging {stopWatch.ElapsedMilliseconds / 200} milliseconds/request");
+        }
+
+        /// <summary>
+        /// Test Method
+        /// </summary>
+        /// <returns></returns>
+        public async Task TestGetPosterWithStream()
+        {
+            // warmup - So that first run does not get calculated in performance
+            await GetPosterWithStream();
+
+            // start stopwatch 
+            var stopWatch = Stopwatch.StartNew();
+
+            // run requests
+            for (int i = 0; i < 200; i++)
+            {
+                await GetPosterWithStream();
+            }
+
+            // stop stopwatch
+            stopWatch.Stop();
+            Console.WriteLine($"Elapsed milliseconds with stream: " +
+                $"{stopWatch.ElapsedMilliseconds}, " +
+                $"averaging {stopWatch.ElapsedMilliseconds / 200} milliseconds/request");
+        }
+
+        /// <summary>
+        /// Test Method
+        /// </summary>
+        /// <returns></returns>
+        public async Task TestGetPosterWithStreamAndCompletionMode()
+        {
+            // warmup - So that first run does not get calculated in performance
+            await GetPosterWithStreamAndCompletionMode();
+
+            // start stopwatch 
+            var stopWatch = Stopwatch.StartNew();
+
+            // run requests
+            for (int i = 0; i < 200; i++)
+            {
+                await GetPosterWithStreamAndCompletionMode();
+            }
+
+            // stop stopwatch
+            stopWatch.Stop();
+            Console.WriteLine($"Elapsed milliseconds with stream and completionmode: " +
+                $"{stopWatch.ElapsedMilliseconds}, " +
+                $"averaging {stopWatch.ElapsedMilliseconds / 200} milliseconds/request");
+        }
+        #endregion
     }
 }
