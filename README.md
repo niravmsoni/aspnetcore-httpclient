@@ -118,3 +118,14 @@
 				- Use it in middleware pipeline - app.UseResponseCompression();
 
 			- From client app, when creating HttpClient, create HttpClientHandler and setup AutomaticDecompression = System.Net.DecompressionMethods.GZip in it.
+
+
+	- 6. Supporting Cancellation
+		- BTS HttpClient works with async Tasks
+			- Cancelling such task potentially frees up a thread
+			- Thread is returned to threadpool for it to be used elsewhere
+			- This improves scalability of our app
+
+		- There are 2 ways Task can be canceled
+			- We cancel Task
+			- Timeout occurs. We should be able to gracefully cancel task
