@@ -129,3 +129,12 @@
 		- There are 2 ways Task can be canceled
 			- We cancel Task
 			- Timeout occurs. We should be able to gracefully cancel task
+
+
+		- CancellationTokenSource
+			- Manages and sends cancellation notifications
+
+		- CancellationToken
+			- Exposed through token property of CancellationTokenSource
+
+		- Asking for cancellation notifies receiver of token that it should cancel its task. So, HTTPClient listens to this cancellation and then takes action to cancel the request
