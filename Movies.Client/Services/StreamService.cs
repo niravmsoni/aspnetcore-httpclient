@@ -44,16 +44,19 @@ namespace Movies.Client.Services
             //Since its stream, we need to dispose it off. Wrap it in a using block
             using (var stream = await response.Content.ReadAsStreamAsync())
             {
-                //Using StreamReader to read the incoming stream(In our case content)
-                using (var streamReader = new StreamReader(stream))
-                {
-                    //Using JsonTextReader to read JsonData
-                    using (var jsonTextReader = new JsonTextReader(streamReader))
-                    {
-                        var jsonSerializer = new JsonSerializer();
-                        var poster = jsonSerializer.Deserialize<Poster>(jsonTextReader);
-                    }
-                }
+                ////Using StreamReader to read the incoming stream(In our case content)
+                //using (var streamReader = new StreamReader(stream))
+                //{
+                //    //Using JsonTextReader to read JsonData
+                //    using (var jsonTextReader = new JsonTextReader(streamReader))
+                //    {
+                //        var jsonSerializer = new JsonSerializer();
+                //        var poster = jsonSerializer.Deserialize<Poster>(jsonTextReader);
+                //    }
+                //}
+
+                //Refactored here
+                var poster = stream.ReadAndDeserializeFromJson<Poster>();
             }
         }
 
@@ -75,16 +78,19 @@ namespace Movies.Client.Services
             using (var stream = await response.Content.ReadAsStreamAsync())
             {
 
-                //Using StreamReader to read the incoming stream(In our case content)
-                using (var streamReader = new StreamReader(stream))
-                {
-                    //Using JsonTextReader to read JsonData
-                    using (var jsonTextReader = new JsonTextReader(streamReader))
-                    {
-                        var jsonSerializer = new JsonSerializer();
-                        var poster = jsonSerializer.Deserialize<Poster>(jsonTextReader);
-                    }
-                }
+                ////Using StreamReader to read the incoming stream(In our case content)
+                //using (var streamReader = new StreamReader(stream))
+                //{
+                //    //Using JsonTextReader to read JsonData
+                //    using (var jsonTextReader = new JsonTextReader(streamReader))
+                //    {
+                //        var jsonSerializer = new JsonSerializer();
+                //        var poster = jsonSerializer.Deserialize<Poster>(jsonTextReader);
+                //    }
+                //}
+
+                //Refactored here
+                var poster = stream.ReadAndDeserializeFromJson<Poster>();
             }
         }
 
