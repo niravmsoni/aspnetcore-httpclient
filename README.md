@@ -82,3 +82,19 @@
 			- Json.NET - Focused on set of advanced features. Both are great choices
 			
 		- Patch is very powerful but generally, APIs only support changes in PATCH that go 1 level deep
+
+	- 5. Improving Performance and Memory use with Streams
+		- Stream = Abstraction of sequence of bytes such as file, an I/O device or network traffic
+		- Classes derived from Stream hide specific details of OS and underlying devices
+		- Streams help in avoiding large in-between(Temporary) variables
+			- Better for memory use
+			- Better for performance
+		- API does not need to work with streams to get these advantages at client level
+		- Up until now, when we made a get request, 
+			- We wait for content to arrive
+			- We parse content as string - THIS IS TEMPORARY STRING
+			- Deserialize string into POCO
+
+		- This can be improved by removing temporary string assignment and directly reading content as STREAM and deserializing it DIRECTLY
+		- response.Content.ReadAsStreamAsync()
+

@@ -60,10 +60,10 @@ namespace Movies.Client
             //serviceCollection.AddScoped<IIntegrationService, CRUDService>();
 
             // For the partial update demos
-             serviceCollection.AddScoped<IIntegrationService, PartialUpdateService>();
+             //serviceCollection.AddScoped<IIntegrationService, PartialUpdateService>();
 
             // For the stream demos
-            // serviceCollection.AddScoped<IIntegrationService, StreamService>();
+            serviceCollection.AddScoped<IIntegrationService, StreamService>();
 
             // For the cancellation demos
             // serviceCollection.AddScoped<IIntegrationService, CancellationService>();
