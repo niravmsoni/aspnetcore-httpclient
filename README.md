@@ -98,3 +98,4 @@
 		- This can be improved by removing temporary string assignment and directly reading content as STREAM and deserializing it DIRECTLY
 		- response.Content.ReadAsStreamAsync()
 
+		- For working with streams, we need it to be configurable. So, that configuration can be found here - https://github.com/KevinDockx/StreamExtensions/tree/master/src/Marvin.StreamExtensions
