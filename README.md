@@ -109,3 +109,12 @@
 				- Always use streams when reading data
 				- Use streams for POST/PUT/PATCH Large amounts of data(For positive impact on memory use)
 				- If not sure, test
+
+
+		- Using Compression to reduce bandwidth
+			- There are compression providers available in .NET such as GZip and Brotli
+			- For Enabling Compression, On API side, 
+				- Add compression services using services.AddResponseCompression();
+				- Use it in middleware pipeline - app.UseResponseCompression();
+
+			- From client app, when creating HttpClient, create HttpClientHandler and setup AutomaticDecompression = System.Net.DecompressionMethods.GZip in it.

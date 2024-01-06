@@ -13,7 +13,15 @@ namespace Movies.Client.Services
 {
     public class StreamService : IIntegrationService
     {
-        private static HttpClient _httpClient = new HttpClient();
+        //Commenting this to add GZip Decompression mechanism
+        //private static HttpClient _httpClient = new HttpClient();
+
+        private static HttpClient _httpClient = new HttpClient(
+            new HttpClientHandler()
+            {
+                AutomaticDecompression = System.Net.DecompressionMethods.GZip
+            });
+
         public StreamService()
         {
             // set up HttpClient instance
@@ -27,6 +35,8 @@ namespace Movies.Client.Services
             //Get
             //await GetPosterWithStream();
             //await GetPosterWithStreamAndCompletionMode();
+
+            //Tests
             //await TestGetPosterWithoutStream();
             //await TestGetPosterWithStream();
             //await TestGetPosterWithStreamAndCompletionMode();
@@ -34,9 +44,14 @@ namespace Movies.Client.Services
             //Post
             //await PostPosterWithStream();
             //await PostAndReadPosterWithStreams();
-            await TestPostPosterWithoutStream();
-            await TestPostPosterWithStream();
-            await TestPostAndReadPosterWithStreams();
+
+            //Tests
+            //await TestPostPosterWithoutStream();
+            //await TestPostPosterWithStream();
+            //await TestPostAndReadPosterWithStreams();
+
+            //GZip
+            await GetPosterWithGZipCompression();
         }
 
         #region Get Methods
@@ -129,6 +144,27 @@ namespace Movies.Client.Services
 
             var content = await response.Content.ReadAsStringAsync();
             var posters = JsonConvert.DeserializeObject<Poster>(content);
+        }
+
+        /// <summary>
+        /// Using GZip Compression method. Pass that information in Accept Encoding request header
+        /// </summary>
+        /// <returns></returns>
+        private async Task GetPosterWithGZipCompression()
+        {
+            var request = new HttpRequestMessage(
+                  HttpMethod.Get,
+                  $"api/movies/d8663e5e-7494-4f81-8739-6e0de1bea7ee/posters/{Guid.NewGuid()}");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+
+            var response = await _httpClient.SendAsync(request,
+                HttpCompletionOption.ResponseHeadersRead);
+            using (var stream = await response.Content.ReadAsStreamAsync())
+            {
+                response.EnsureSuccessStatusCode();
+                var poster = stream.ReadAndDeserializeFromJson<Poster>();
+            }
         }
 
         #endregion
