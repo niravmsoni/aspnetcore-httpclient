@@ -99,3 +99,13 @@
 		- response.Content.ReadAsStreamAsync()
 
 		- For working with streams, we need it to be configurable. So, that configuration can be found here - https://github.com/KevinDockx/StreamExtensions/tree/master/src/Marvin.StreamExtensions
+
+		- Conclusion
+			- Creating an disposing streams can cause some overhead
+			- Using streams keeps memory use low. 
+			- Since we do not have that temporary strings here, runtime does not have to invoke garbage collection. This too has a positive impact on performance
+			- To keep performance consistently good, using less memory is advisable
+			- Advise
+				- Always use streams when reading data
+				- Use streams for POST/PUT/PATCH Large amounts of data(For positive impact on memory use)
+				- If not sure, test

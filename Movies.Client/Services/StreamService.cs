@@ -1,4 +1,5 @@
-﻿using Movies.Client.Models;
+﻿using Marvin.StreamExtensions;
+using Movies.Client.Models;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
@@ -23,15 +24,19 @@ namespace Movies.Client.Services
 
         public async Task Run()
         {
+            //Get
             //await GetPosterWithStream();
             //await GetPosterWithStreamAndCompletionMode();
-            //await PostPosterWithStream();
-            await PostAndReadPosterWithStreams();
-
-            //Test methods
             //await TestGetPosterWithoutStream();
             //await TestGetPosterWithStream();
             //await TestGetPosterWithStreamAndCompletionMode();
+
+            //Post
+            //await PostPosterWithStream();
+            //await PostAndReadPosterWithStreams();
+            await TestPostPosterWithoutStream();
+            await TestPostPosterWithStream();
+            await TestPostAndReadPosterWithStreams();
         }
 
         #region Get Methods
@@ -184,7 +189,11 @@ namespace Movies.Client.Services
             var memoryContentStream = new MemoryStream();
 
             //Serialize to Json and Write to memory stream
-            memoryContentStream.SerializeToJsonAndWrite(posterForCreation);
+            //After using marvin.StreamExtension package, passing parameters to configure it
+            memoryContentStream.SerializeToJsonAndWrite(posterForCreation, 
+                new UTF8Encoding(), 
+                1024,
+                true);
 
             //Set to position 0 since that's where we want to start streaming it from
             memoryContentStream.Seek(0, SeekOrigin.Begin);
@@ -208,6 +217,30 @@ namespace Movies.Client.Services
                     // do something with the newly created poster     
                 }
             }
+        }
+
+        private async Task PostPosterWithoutStream()
+        {
+            // generate a movie poster of 500KB
+            var random = new Random();
+            var generatedBytes = new byte[524288];
+            random.NextBytes(generatedBytes);
+
+            var posterForCreation = new PosterForCreation(generatedBytes, "A new poster for The Big Lebowski");
+
+            var serializedPosterForCreation = JsonConvert.SerializeObject(posterForCreation);
+
+            var request = new HttpRequestMessage(HttpMethod.Post,
+                "api/movies/d8663e5e-7494-4f81-8739-6e0de1bea7ee/posters");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            request.Content = new StringContent(serializedPosterForCreation);
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            var createdMovie = JsonConvert.DeserializeObject<Poster>(content);
         }
         #endregion
 
@@ -286,6 +319,70 @@ namespace Movies.Client.Services
                 $"{stopWatch.ElapsedMilliseconds}, " +
                 $"averaging {stopWatch.ElapsedMilliseconds / 200} milliseconds/request");
         }
+
+        private async Task TestPostPosterWithoutStream()
+        {
+            // warmup
+            await PostPosterWithoutStream();
+
+            // start stopwatch 
+            var stopWatch = Stopwatch.StartNew();
+
+            // run requests
+            for (int i = 0; i < 200; i++)
+            {
+                await PostPosterWithoutStream();
+            }
+
+            // stop stopwatch
+            stopWatch.Stop();
+            Console.WriteLine($"Elapsed milliseconds without stream: " +
+                $"{stopWatch.ElapsedMilliseconds}, " +
+                $"averaging {stopWatch.ElapsedMilliseconds / 200} milliseconds/request");
+        }
+
+        private async Task TestPostPosterWithStream()
+        {
+            // warmup
+            await PostPosterWithStream();
+
+            // start stopwatch 
+            var stopWatch = Stopwatch.StartNew();
+
+            // run requests
+            for (int i = 0; i < 200; i++)
+            {
+                await PostPosterWithStream();
+            }
+
+            // stop stopwatch
+            stopWatch.Stop();
+            Console.WriteLine($"Elapsed milliseconds with stream: " +
+                $"{stopWatch.ElapsedMilliseconds}, " +
+                $"averaging {stopWatch.ElapsedMilliseconds / 200} milliseconds/request");
+        }
+
+        private async Task TestPostAndReadPosterWithStreams()
+        {
+            // warmup
+            await PostAndReadPosterWithStreams();
+
+            // start stopwatch 
+            var stopWatch = Stopwatch.StartNew();
+
+            // run requests
+            for (int i = 0; i < 200; i++)
+            {
+                await PostAndReadPosterWithStreams();
+            }
+
+            // stop stopwatch
+            stopWatch.Stop();
+            Console.WriteLine($"Elapsed milliseconds with stream on post and read: " +
+                $"{stopWatch.ElapsedMilliseconds}, " +
+                $"averaging {stopWatch.ElapsedMilliseconds / 200} milliseconds/request");
+        }
+
         #endregion
     }
 }
