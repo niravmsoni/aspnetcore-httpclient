@@ -24,7 +24,8 @@ namespace Movies.Client.Services
         {
             //await TestDisposeHttpClient(_cancellationTokenSource.Token);
             //await TestReuseHttpClient(_cancellationTokenSource.Token);
-            await GetMoviesWithHttpClientFromFactory(_cancellationTokenSource.Token);
+            //await GetMoviesWithHttpClientFromFactory(_cancellationTokenSource.Token);
+            await GetMoviesWithNamedHttpClientFromFactory(_cancellationTokenSource.Token);
         }
 
 
@@ -102,6 +103,33 @@ namespace Movies.Client.Services
             var request = new HttpRequestMessage(
                 HttpMethod.Get,
                 "http://localhost:57863/api/movies");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            using (var response = await httpClient.SendAsync(request,
+               HttpCompletionOption.ResponseHeadersRead,
+               cancellationToken))
+            {
+                var stream = await response.Content.ReadAsStreamAsync();
+                response.EnsureSuccessStatusCode();
+                var movies = stream.ReadAndDeserializeFromJson<List<Movie>>();
+            }
+        }
+
+        /// <summary>
+        /// Getting HttpClient instance from HttpClientFactory using Named Client
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        private async Task GetMoviesWithNamedHttpClientFromFactory(CancellationToken cancellationToken)
+        {
+            //This will also work but it won't have our defaults configured
+            //var httpClient = _httpClientFactory.CreateClient();
+            //This would have all defaults(BaseAddress, Header, Timeout etc.) configured
+            var httpClient = _httpClientFactory.CreateClient("MoviesClient");
+
+            var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                "api/movies");
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             using (var response = await httpClient.SendAsync(request,
