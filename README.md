@@ -217,7 +217,9 @@
 		- We can achieve things like:
 			- Token Propagation
 			- Retry
-			- Timeout etc
+			- Timeout
+			- Cache - Client side cache implementation
+			- HSTS handler
 
 		- Retry Policy
 			- Requests might fail due to a network hick-up or temporary connection issue
@@ -230,3 +232,8 @@
 		- Timeout
 			- Requests can timeout
 			- We can use delegating handler to throw TimeoutException instead of TaskCancelledException
+
+		- Polly
+			- .NET resilience and transient fault handling library allowing developers to express policies in fluent and thread-safe manner
+			- Refer here - https://github.com/App-vNext/Polly
+			- Refer Fault Tolerant Web Service Requests with Polly (Bryan Hogan) on Pluralsight
