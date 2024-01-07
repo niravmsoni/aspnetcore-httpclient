@@ -160,3 +160,12 @@
 
 		- Clean and Efficient Solution
 			- Use HttpClientFactory
+			- HttpClientFactory - Instantiates HttpClient but reuses the handler from HttpMessageHandler Pool
+			- The handlers is held for 2 minutes by default. So, any new HTTP request can reuse the httpclient and handler created previously i.e. available in Pool
+			- This is how both problems are solved
+				- Reusing handlers allows reusing underlying connections which solve socket issue
+				- Disposing handler after 2 mins solves DNS issue
+
+		- HttpClient Factory provides central location for naming and configuring logical HttpClients
+		- For these, we can configure handlers and policies
+		- Install NuGet - Microsoft.Extensions.Http package
