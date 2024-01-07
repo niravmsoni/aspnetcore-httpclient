@@ -171,3 +171,7 @@
 		- Install NuGet - Microsoft.Extensions.Http package
 		- Register HttpClient services in DI
 		- Within services, inject IHttpClientFactory and whenever we need to make a call to the API, call the CreateClient() method that will return HttpClient
+		- Different implementations
+			- Default clients
+			- Named clients
+			- Typed clients
