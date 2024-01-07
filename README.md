@@ -128,8 +128,7 @@
 
 		- There are 2 ways Task can be canceled
 			- We cancel Task
-			- Timeout occurs. We should be able to gracefully cancel task
-
+			- Timeout occurs. We should be able to gracefully handle canceled task
 
 		- CancellationTokenSource
 			- Manages and sends cancellation notifications
