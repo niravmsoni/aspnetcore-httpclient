@@ -207,3 +207,10 @@
 		- Not all APIs use status codes correctly
 			- At times, API would return 200OK always and populate response body with additional details
 			- So, in such cases use combination of status codes and response message to handle response
+
+	- 9. Custom Message Handlers
+		- When we invoke HttpClient request, it forms the HttpRequestMessage.
+		- Then it goes through Http Message Handlers(1..*) if they are configured as HttpRequest Pipeline
+		- The last handler would be HttpClientHandler
+		- The same set of handlers are executed in reverse order
+		- After that it forms HttpResponseMessage and returns it back to caller
