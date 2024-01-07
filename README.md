@@ -200,3 +200,10 @@
 		- Ideally, we should handle whatever response codes we know the API could send back. Like 404, 401 etc.
 		- For rest of them, we should keep response.EnsureSuccessStatusCode() call - This would throw HttpRequestException if matching condition not found.
 		- Refer DealingWithErrorsAndFaultsService.cs
+
+		- When error happens, API can return additional information on error in response body such as:
+			- Error Messages
+			- Validation errors etc.
+		- Not all APIs use status codes correctly
+			- At times, API would return 200OK always and populate response body with additional details
+			- So, in such cases use combination of status codes and response message to handle response
