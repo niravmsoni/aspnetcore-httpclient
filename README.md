@@ -175,3 +175,5 @@
 			- Default clients
 			- Named clients
 			- Typed clients
+		- Check HttpClientFactoryInstanceManagementService for more details
+

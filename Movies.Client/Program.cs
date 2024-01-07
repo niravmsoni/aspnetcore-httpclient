@@ -68,12 +68,20 @@ namespace Movies.Client
 
             //Using Typed client. Registers it with transient scope
             //Factory to automatically create instance of HttpClient with whichever configurations we input when instance of Movies Client is requested from DI
-            serviceCollection.AddHttpClient<MoviesClient>(client =>
-            {
-                client.BaseAddress = new Uri("http://localhost:57863");
-                client.Timeout = new TimeSpan(0, 0, 30);
-                client.DefaultRequestHeaders.Clear();
-            })
+            //serviceCollection.AddHttpClient<MoviesClient>(client =>
+            //{
+            //    client.BaseAddress = new Uri("http://localhost:57863");
+            //    client.Timeout = new TimeSpan(0, 0, 30);
+            //    client.DefaultRequestHeaders.Clear();
+            //})
+            //    .ConfigurePrimaryHttpMessageHandler(handler =>
+            //    new HttpClientHandler()
+            //    {
+            //        AutomaticDecompression = System.Net.DecompressionMethods.GZip
+            //    });
+
+            //Using Typed client. Moving configurations to MoviesClient class
+            serviceCollection.AddHttpClient<MoviesClient>()
                 .ConfigurePrimaryHttpMessageHandler(handler =>
                 new HttpClientHandler()
                 {
@@ -87,7 +95,7 @@ namespace Movies.Client
             //serviceCollection.AddScoped<IIntegrationService, CRUDService>();
 
             // For the partial update demos
-             //serviceCollection.AddScoped<IIntegrationService, PartialUpdateService>();
+            //serviceCollection.AddScoped<IIntegrationService, PartialUpdateService>();
 
             // For the stream demos
             //serviceCollection.AddScoped<IIntegrationService, StreamService>();
@@ -96,7 +104,7 @@ namespace Movies.Client
             //serviceCollection.AddScoped<IIntegrationService, CancellationService>();
 
             // For the HttpClientFactory demos
-             serviceCollection.AddScoped<IIntegrationService, HttpClientFactoryInstanceManagementService>();
+            serviceCollection.AddScoped<IIntegrationService, HttpClientFactoryInstanceManagementService>();
 
             // For the dealing with errors and faults demos
             // serviceCollection.AddScoped<IIntegrationService, DealingWithErrorsAndFaultsService>();
