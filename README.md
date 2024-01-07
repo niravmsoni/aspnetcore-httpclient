@@ -246,3 +246,6 @@
 
 		- Mocking HttpClients is complex
 			- Instead, we can use Custom Handler to stop communication with API and return desired response
+			- See TestableClassWithApiAccessUnitTests
+
+		
