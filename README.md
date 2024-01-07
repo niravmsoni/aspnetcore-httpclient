@@ -197,3 +197,6 @@
 				- Level 500 (Faults)
 					500 - Internal Server error
 
+		- Ideally, we should handle whatever response codes we know the API could send back. Like 404, 401 etc.
+		- For rest of them, we should keep response.EnsureSuccessStatusCode() call - This would throw HttpRequestException if matching condition not found.
+		- Refer DealingWithErrorsAndFaultsService.cs
