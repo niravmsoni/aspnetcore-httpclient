@@ -177,3 +177,23 @@
 			- Typed clients
 		- Check HttpClientFactoryInstanceManagementService for more details
 
+	- 8. Handling faults and errors
+		- Status Codes
+			- EnsureSuccessStatusCode() throws HttpRequestException on all but 2xx level status codes
+			- Depending on actual status code, we want to act differently
+			- Importance of Status Codes
+				- Level 200(Success)
+					200 - OK
+					201 - Created
+					204 - No Content - success delete request
+
+				- Level 400 (API correctly rejects requets)
+					400 - Bad Request
+					401 - Unauthorized
+					403 - Forbidden - Authentication success but user does not have access to perform operation
+					404 - Not Found
+					422 - Unprocessable Entity - Semantic mistakes. Validation failed
+
+				- Level 500 (Faults)
+					500 - Internal Server error
+
