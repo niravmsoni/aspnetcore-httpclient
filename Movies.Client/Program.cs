@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Movies.Client.HttpHandlers;
 using Movies.Client.Services;
 using System;
 using System.Net.Http;
@@ -54,12 +55,15 @@ namespace Movies.Client
             serviceCollection.AddLogging(configure => configure.AddDebug().AddConsole());
 
             //Using Named client to do basic configurations such as BaseAddress, Timeout etc.
+
+            //Sequence of delegating handler matters here. However, the one registered as PrimaryHttpMessageHandler would be the last to execute.
             serviceCollection.AddHttpClient("MoviesClient", client =>
             {
                 client.BaseAddress = new Uri("http://localhost:57863");
                 client.Timeout = new TimeSpan(0, 0, 30);
                 client.DefaultRequestHeaders.Clear();
             })
+                .AddHttpMessageHandler(handler => new RetryPolicyDelegatingHandler(2))
                 .ConfigurePrimaryHttpMessageHandler(handler =>
                 new HttpClientHandler()
                 {
@@ -107,10 +111,10 @@ namespace Movies.Client
             //serviceCollection.AddScoped<IIntegrationService, HttpClientFactoryInstanceManagementService>();
 
             // For the dealing with errors and faults demos
-             serviceCollection.AddScoped<IIntegrationService, DealingWithErrorsAndFaultsService>();
+            // serviceCollection.AddScoped<IIntegrationService, DealingWithErrorsAndFaultsService>();
 
             // For the custom http handlers demos
-            // serviceCollection.AddScoped<IIntegrationService, HttpHandlersService>();     
+             serviceCollection.AddScoped<IIntegrationService, HttpHandlersService>();     
         }
     }
 }

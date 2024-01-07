@@ -214,3 +214,19 @@
 		- The last handler would be HttpClientHandler
 		- The same set of handlers are executed in reverse order
 		- After that it forms HttpResponseMessage and returns it back to caller
+		- We can achieve things like:
+			- Token Propagation
+			- Retry
+			- Timeout etc
+
+		- Retry Policy
+			- Requests might fail due to a network hick-up or temporary connection issue
+			- Retry policy states that if request fails, it should try again(For set number of times)
+			- Refer RetryDelegatingHandler
+				- Inherit Delegating handler
+				- Override SendAsync() method
+				- Make sure to register delegating handler in the HTTP request pipeline
+
+		- Timeout
+			- Requests can timeout
+			- We can use delegating handler to throw TimeoutException instead of TaskCancelledException
