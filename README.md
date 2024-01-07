@@ -169,3 +169,5 @@
 		- HttpClient Factory provides central location for naming and configuring logical HttpClients
 		- For these, we can configure handlers and policies
 		- Install NuGet - Microsoft.Extensions.Http package
+		- Register HttpClient services in DI
+		- Within services, inject IHttpClientFactory and whenever we need to make a call to the API, call the CreateClient() method that will return HttpClient

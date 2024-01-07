@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Marvin.StreamExtensions;
+using Movies.Client.Models;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,13 +13,22 @@ namespace Movies.Client.Services
     public class HttpClientFactoryInstanceManagementService : IIntegrationService
     {
         private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private readonly IHttpClientFactory _httpClientFactory;
+
+        public HttpClientFactoryInstanceManagementService(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+        }
+
         public async Task Run()
         {
             //await TestDisposeHttpClient(_cancellationTokenSource.Token);
-            await TestReuseHttpClient(_cancellationTokenSource.Token);
+            //await TestReuseHttpClient(_cancellationTokenSource.Token);
+            await GetMoviesWithHttpClientFromFactory(_cancellationTokenSource.Token);
         }
 
 
+        #region Understanding HttpClient instance management without IHttpClientFactory
         /// <summary>
         /// Bad example - Opens up 10 sockets and blocks them till 240 seconds (in TIME_WAIT state)
         /// </summary>
@@ -73,5 +85,34 @@ namespace Movies.Client.Services
                 }
             }
         }
+
+        #endregion
+
+        #region Using HttpClient instances from IHttpClientFactory
+        /// <summary>
+        /// Getting HttpClient instance from HttpClientFactory
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        private async Task GetMoviesWithHttpClientFromFactory(CancellationToken cancellationToken)
+        {
+            //Create HttpClient
+            var httpClient = _httpClientFactory.CreateClient();
+
+            var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                "http://localhost:57863/api/movies");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            using (var response = await httpClient.SendAsync(request,
+               HttpCompletionOption.ResponseHeadersRead,
+               cancellationToken))
+            {
+                var stream = await response.Content.ReadAsStreamAsync();
+                response.EnsureSuccessStatusCode();
+                var movies = stream.ReadAndDeserializeFromJson<List<Movie>>();
+            }
+        }
+        #endregion
     }
 }
