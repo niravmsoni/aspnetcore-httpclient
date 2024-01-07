@@ -149,5 +149,14 @@
 			- Reopening connection is slow
 			- As it takes time to close connection, we might not have socket available for new one (Resulting in SocketExceptions)
 
-		- When we wrap HttpClient in using statement, we see that lot of connections stay in TIME_WAIT state.
-		- This will remain in TIME_WAIT state for a default of 240 seconds(Till that time the socket would be occupied)
+		- Problem#1
+			- When we wrap HttpClient in using statement, we see that lot of connections stay in TIME_WAIT state.
+			- This will remain in TIME_WAIT state for a default of 240 seconds(Till that time the socket would be occupied)
+			- This can be solved by reusing HttpClient
+
+		- Problem#2
+			- If we reuse HttpClient, it results in another issue i.e. DNS changes would not be honoured.
+			- This could result in requests being served by incorrect server
+
+		- Clean and Efficient Solution
+			- Use HttpClientFactory
