@@ -142,3 +142,12 @@
 		- We need to make sure we pass Token from CancellationTokenSource object to make sure cancellation actually happens after calling cancel() or CancelAfter()
 
 		- Another way to cancel request is through timeout. When configuring HttpClient, make sure we set a timeout. If we set it for 2 seconds, after 2 seconds, HttpClient will throw OperationCanceled Exception
+
+	- 7. Improving HttpClient Instance Management with HttpClientFactory
+		- We should not dispose HttpClient (Do not wrap it in a using statement)
+		- If we dispose HttpClient, underlying HttpClientHandler is also disposed which closes the underlying connection
+			- Reopening connection is slow
+			- As it takes time to close connection, we might not have socket available for new one (Resulting in SocketExceptions)
+
+		- When we wrap HttpClient in using statement, we see that lot of connections stay in TIME_WAIT state.
+		- This will remain in TIME_WAIT state for a default of 240 seconds(Till that time the socket would be occupied)
