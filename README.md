@@ -237,3 +237,12 @@
 			- .NET resilience and transient fault handling library allowing developers to express policies in fluent and thread-safe manner
 			- Refer here - https://github.com/App-vNext/Polly
 			- Refer Fault Tolerant Web Service Requests with Polly (Bryan Hogan) on Pluralsight
+
+	- 10. Unit tests with HttpClient
+		- For testing a specific piece of functionality that interacts with external API, we do not want to write actual test for it (Since if we do that it would result in integration tests).
+		- You do not want to call API during tests
+			- It is hard t maintain
+			- Potentially cost-inducing
+
+		- Mocking HttpClients is complex
+			- Instead, we can use Custom Handler to stop communication with API and return desired response
