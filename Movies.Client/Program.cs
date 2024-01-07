@@ -55,14 +55,16 @@ namespace Movies.Client
             serviceCollection.AddLogging(configure => configure.AddDebug().AddConsole());
 
             //Using Named client to do basic configurations such as BaseAddress, Timeout etc.
-
             //Sequence of delegating handler matters here. However, the one registered as PrimaryHttpMessageHandler would be the last to execute.
+            //Make sure timeout specified in timeout delegating handler is less than the one specified at HttpClient level.
+            //If not, we will continuously see TaskCanceled exception
             serviceCollection.AddHttpClient("MoviesClient", client =>
             {
                 client.BaseAddress = new Uri("http://localhost:57863");
                 client.Timeout = new TimeSpan(0, 0, 30);
                 client.DefaultRequestHeaders.Clear();
             })
+                .AddHttpMessageHandler(handler => new TimeoutDelegatingHandler(TimeSpan.FromSeconds(20)))
                 .AddHttpMessageHandler(handler => new RetryPolicyDelegatingHandler(2))
                 .ConfigurePrimaryHttpMessageHandler(handler =>
                 new HttpClientHandler()
