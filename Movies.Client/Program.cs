@@ -66,6 +66,20 @@ namespace Movies.Client
                     AutomaticDecompression = System.Net.DecompressionMethods.GZip
                 });
 
+            //Using Typed client. Registers it with transient scope
+            //Factory to automatically create instance of HttpClient with whichever configurations we input when instance of Movies Client is requested from DI
+            serviceCollection.AddHttpClient<MoviesClient>(client =>
+            {
+                client.BaseAddress = new Uri("http://localhost:57863");
+                client.Timeout = new TimeSpan(0, 0, 30);
+                client.DefaultRequestHeaders.Clear();
+            })
+                .ConfigurePrimaryHttpMessageHandler(handler =>
+                new HttpClientHandler()
+                {
+                    AutomaticDecompression = System.Net.DecompressionMethods.GZip
+                });
+
             // register the integration service on our container with a 
             // scoped lifetime
 
