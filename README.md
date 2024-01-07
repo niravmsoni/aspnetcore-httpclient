@@ -137,3 +137,8 @@
 			- Exposed through token property of CancellationTokenSource
 
 		- Asking for cancellation notifies receiver of token that it should cancel its task. So, HTTPClient listens to this cancellation and then takes action to cancel the request
+
+		- Using CancellationTokenSource, we can explicitly Cancel request by calling Cancel() or CancelAfter(Timespan time) method. This will trigger cancellation
+		- We need to make sure we pass Token from CancellationTokenSource object to make sure cancellation actually happens after calling cancel() or CancelAfter()
+
+		- Another way to cancel request is through timeout. When configuring HttpClient, make sure we set a timeout. If we set it for 2 seconds, after 2 seconds, HttpClient will throw OperationCanceled Exception
