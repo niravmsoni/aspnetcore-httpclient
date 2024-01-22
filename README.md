@@ -12,6 +12,7 @@
 		- text/html
 
 
+
 - Content Negotiation
 	- Mechanism used for serving different representations of a resource at the same URI
 	- Request Headers
