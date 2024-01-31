@@ -1,6 +1,6 @@
 # aspnetcore-httpclient
 
-- Request Header
+- Request Headers
 	- Accept - Tells the server the mediatype client is willing to accept
 		- application/xml
 		- application/json
