@@ -17,7 +17,7 @@
 	- Mechanism used for serving different representations of a resource at the same URI
 	- Request Headers
 		- Contains information on resource to be fetched or about client itself
-		- Supplied by client
+		- It is Supplied by client
 		- Considered as best practice to be as strict as possible. Setting accept header improves reliability
 		- Most common header
 			- Accept: application/json, application/xml, text/html
